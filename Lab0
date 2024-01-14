@@ -1,0 +1,96 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        // Task 1: Creating Variables
+
+        // Prompt the user to enter the low number
+        double low = GetUserInput("Enter the low number: ", x => x > 0);
+
+        // Prompt the user to enter the high number
+        double high = GetUserInput($"Enter the high number greater than {low}: ", x => x > low);
+
+        // Calculate and print out the difference between low and high
+        double difference = high - low;
+        Console.WriteLine($"The difference between {low} and {high} is: {difference}");
+
+        // Task 2: Looping and Input Validation
+
+        // Task 3: Using List and File I/O
+
+        // Create a List<double> variable that holds every number between low and high
+        List<double> numbersList = new List<double>();
+        for (double i = low; i <= high; i++)
+        {
+            numbersList.Add(i);
+        }
+
+        // Create a new file called "numbers.txt"
+        string filePath = "numbers.txt";
+
+        // Write each number in the list to the file in reverse order
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            for (int i = numbersList.Count - 1; i >= 0; i--)
+            {
+                writer.WriteLine(numbersList[i]);
+            }
+        }
+
+        Console.WriteLine($"Numbers have been written to {filePath} in reverse order.");
+
+        // Read numbers back from the file and print out the sum
+        double sum = 0;
+        foreach (string line in File.ReadLines(filePath))
+        {
+            if (double.TryParse(line, out double number))
+            {
+                sum += number;
+            }
+        }
+        Console.WriteLine($"The sum of the numbers read from the file is: {sum}");
+
+        // Print out the prime numbers between low and high
+        Console.WriteLine($"Prime numbers between {low} and {high}:");
+        for (double i = low; i <= high; i++)
+        {
+            if (IsPrime(i))
+            {
+                Console.Write($"{i} ");
+            }
+        }
+    }
+
+    static double GetUserInput(string prompt, Func<double, bool> validation)
+    {
+        double userInput;
+        do
+        {
+            Console.Write(prompt);
+        } while (!double.TryParse(Console.ReadLine(), out userInput) || !validation(userInput));
+
+        return userInput;
+    }
+
+    static bool IsPrime(double number)
+    {
+        if (number <= 1)
+        {
+            return false;
+        }
+
+        for (int i = 2; i <= Math.Sqrt(number); i++)
+        {
+            if (number % i == 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
